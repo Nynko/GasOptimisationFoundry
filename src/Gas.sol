@@ -28,15 +28,15 @@ contract GasContract is Ownable {
         Dividend,
         GroupPayment
     }
-    PaymentType constant defaultPayment = PaymentType.Unknown;
+    // REMOVED: PaymentType constant defaultPayment = PaymentType.Unknown;
 
     History[] public paymentHistory; // when a payment was updated
     // Could this be useful ? mapping(address => History) public mapPaymentHistory;
-    struct Payment {
+    struct Payment { // TODO: move the elements to optimize
         PaymentType paymentType;
         uint256 paymentID;
         bool adminUpdated;
-        string recipientName; // max 8 characters
+        string recipientName; // max 8 characters --> TODO: certainly optimizable
         address recipient;
         address admin; // administrators address
         uint256 amount;
@@ -47,8 +47,8 @@ contract GasContract is Ownable {
         address updatedBy;
         uint256 blockNumber;
     }
-    uint256 wasLastOdd = 1;
-    mapping(address => uint256) public isOddWhitelistUser;
+    bool wasLastOdd = true;
+    mapping(address => bool) public isOddWhitelistUser;
     
     struct ImportantStruct {
         uint256 amount;
@@ -189,12 +189,13 @@ contract GasContract is Ownable {
         );
         return payments[_user];
     }
-
+    
     function transfer(
         address _recipient,
         uint256 _amount,
         string calldata _name
     ) public returns (bool status_) {
+        // bytes8 memory b3 = bytes8(_name);
         address senderOfTx = msg.sender;
         require(
             balances[senderOfTx] >= _amount,
@@ -213,7 +214,7 @@ contract GasContract is Ownable {
         payment.paymentType = PaymentType.BasicPayment;
         payment.recipient = _recipient;
         payment.amount = _amount;
-        payment.recipientName = _name;
+        payment.recipientName = _name ;
         payment.paymentID = ++paymentCounter;
         payments[senderOfTx].push(payment);
         bool[] memory status = new bool[](tradePercent);
@@ -281,15 +282,14 @@ contract GasContract is Ownable {
             whitelist[_userAddrs] -= _tier;
             whitelist[_userAddrs] = 2;
         }
-        uint256 wasLastAddedOdd = wasLastOdd;
-        if (wasLastAddedOdd == 1) {
-            wasLastOdd = 0;
-            isOddWhitelistUser[_userAddrs] = wasLastAddedOdd;
-        } else if (wasLastAddedOdd == 0) {
-            wasLastOdd = 1;
-            isOddWhitelistUser[_userAddrs] = wasLastAddedOdd;
+        if (wasLastOdd) {
+            wasLastOdd = false;
+            isOddWhitelistUser[_userAddrs] = wasLastOdd;
+        } else if (!wasLastOdd) {
+            wasLastOdd = true;
+            isOddWhitelistUser[_userAddrs] = wasLastOdd;
         } else {
-            revert("Contract hacked, imposible, call help");
+            revert("Contract hacked, imposible, call help"); // TODO: CUSTOM ERRORS
         }
         emit AddedToWhitelist(_userAddrs, _tier);
     }
