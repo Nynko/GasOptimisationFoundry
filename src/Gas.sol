@@ -10,17 +10,18 @@ contract GasContract is Ownable {
     // uint256 public basicFlag = 0;
     bool constant public dividendFlag = true;
     // 
-    uint256 public totalSupply = 0; // cannot be updated
+    uint256 immutable public totalSupply; // cannot be updated
     uint256 public paymentCounter = 0;
     mapping(address => uint256) public balances;
     uint256 public tradePercent = 12;
     address public contractOwner;
-    uint256 public tradeMode = 0;
+    // REMOVED uint256 public tradeMode = 0;
     mapping(address => Payment[]) public payments;
     mapping(address => uint256) public whitelist;
-    address[5] public administrators;
-    bool public isReady = false;
-    enum PaymentType {
+    address[5] public administrators; // ARRAY OF LENGHT 5 => 5*20 BYTES = 100 BYTES
+    // Potentially optimizing it using a mapping with an id
+    // REMOVED bool public isReady = false;
+    enum PaymentType { // Check on test if all values exist
         Unknown,
         BasicPayment,
         Refund,
@@ -30,7 +31,7 @@ contract GasContract is Ownable {
     PaymentType constant defaultPayment = PaymentType.Unknown;
 
     History[] public paymentHistory; // when a payment was updated
-
+    // Could this be useful ? mapping(address => History) public mapPaymentHistory;
     struct Payment {
         PaymentType paymentType;
         uint256 paymentID;
