@@ -26,11 +26,7 @@ contract GasContract is Ownable {
     
     struct ImportantStruct {
         uint256 amount;
-        uint256 valueA; // max 3 digits
-        uint256 bigValue;
-        uint256 valueB; // max 3 digits
         bool paymentStatus;
-        address sender;
     }
     mapping(address => ImportantStruct) public whiteListStruct;
 
@@ -68,7 +64,7 @@ contract GasContract is Ownable {
         require(
             usersTier < 4,
             "Gas Contract CheckIfWhiteListed modifier : revert happened because the user's tier is incorrect, it cannot be over 4 as the only tier we have are: 1, 2, 3; therfore 4 is an invalid tier for the whitlist of this contract. make sure whitlist tiers were set correctly"
-        );
+        ); // TODO: CUSTOM ERROR WITH "Gas Contract CheckIfWhiteListed modifier" SO LESS TEXT 
         _;
     }
 
@@ -162,7 +158,7 @@ contract GasContract is Ownable {
         uint256 _amount
     ) public checkIfWhiteListed(msg.sender) {
         address senderOfTx = msg.sender;
-        whiteListStruct[senderOfTx] = ImportantStruct(_amount, 0, 0, 0, true, msg.sender);
+        whiteListStruct[senderOfTx] = ImportantStruct(_amount,true);
         
         require(
             balances[senderOfTx] >= _amount,
@@ -181,6 +177,7 @@ contract GasContract is Ownable {
     }
 
     function getPaymentStatus(address sender) public view returns (bool, uint256) {
+        // Nico: I think there is more optimization to be done on whiteListStruct
         return (whiteListStruct[sender].paymentStatus, whiteListStruct[sender].amount);
     }
 
