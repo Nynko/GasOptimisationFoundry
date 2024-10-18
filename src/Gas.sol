@@ -13,7 +13,7 @@ contract GasContract is Ownable {
     mapping(address => Payment[]) public payments;
     mapping(address => uint256) public whitelist;
     address[5] public administrators; // ARRAY OF LENGHT 5 => 5*20 BYTES = 100 BYTES
-    // Potentially optimizing it using a mapping with an id
+    // Potentially optimizing it using a mapping with an id ??
     struct Payment { // TODO: move the elements to optimize
         // PaymentType paymentType;
         uint256 paymentID;
@@ -23,8 +23,6 @@ contract GasContract is Ownable {
         address admin; // administrators address
         uint256 amount;
     }
-    bool wasLastOdd = true;
-    mapping(address => bool) public isOddWhitelistUser;
     
     struct ImportantStruct {
         uint256 amount;
@@ -52,7 +50,7 @@ contract GasContract is Ownable {
         } else {
             revert(
                 "Error in Gas contract - onlyAdminOrOwner modifier : revert happened because the originator of the transaction was not the admin, and furthermore he wasn't the owner of the contract, so he cannot run this function"
-            );
+            ); // TODO: CUSTOM ERRORS
         }
     }
 
@@ -155,13 +153,6 @@ contract GasContract is Ownable {
         } else if (_tier > 0 && _tier < 3) {
             whitelist[_userAddrs] -= _tier;
             whitelist[_userAddrs] = 2;
-        }
-        if (wasLastOdd) {
-            isOddWhitelistUser[_userAddrs] = false;
-        } else if (!wasLastOdd) {
-            isOddWhitelistUser[_userAddrs] = true;
-        } else {
-            revert("Contract hacked, imposible, call help"); // TODO: CUSTOM ERRORS
         }
         emit AddedToWhitelist(_userAddrs, _tier);
     }
