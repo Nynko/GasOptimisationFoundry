@@ -33,8 +33,7 @@ contract GasContract is Ownable {
         address senderOfTx = msg.sender;
         if (checkForAdmin(senderOfTx)) {
             require(
-                checkForAdmin(senderOfTx),
-                "Gas Contract Only Admin Check-  Caller not admin"
+                checkForAdmin(senderOfTx)
             );
             _;
         } else if (senderOfTx == contractOwner) {
@@ -46,12 +45,8 @@ contract GasContract is Ownable {
         }
     }
 
-    modifier checkIfWhiteListed(address sender) {
+    modifier checkIfWhiteListed() {
         address senderOfTx = msg.sender;
-        require(
-            senderOfTx == sender,
-            "Gas Contract CheckIfWhiteListed modifier : revert happened because the originator of the transaction was not the sender"
-        );
         uint256 usersTier = whitelist[senderOfTx];
         require(
             usersTier > 0,
@@ -105,7 +100,7 @@ contract GasContract is Ownable {
         require(
             balances[senderOfTx] >= _amount,
             "Gas Contract - Transfer function - Sender has insufficient Balance"
-        );
+        ); //CUSTOM ERROR: Gas Contract - Transfer function
         require(
             bytes(_name).length < 9,
             "Gas Contract - Transfer function -  The recipient name is too long, there is a max length of 8 characters"
@@ -152,7 +147,7 @@ contract GasContract is Ownable {
     function whiteTransfer(
         address _recipient,
         uint256 _amount
-    ) public checkIfWhiteListed(msg.sender) {
+    ) public checkIfWhiteListed() {
         address senderOfTx = msg.sender;
         whiteListStruct[senderOfTx] = _amount;
         
