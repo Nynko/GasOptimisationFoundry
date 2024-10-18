@@ -98,12 +98,10 @@ contract GasContract is Ownable {
         // bytes8 memory b3 = bytes8(_name);
         address senderOfTx = msg.sender;
         require(
-            balances[senderOfTx] >= _amount,
-            "Gas Contract - Transfer function - Sender has insufficient Balance"
+            balances[senderOfTx] >= _amount
         ); //CUSTOM ERROR: Gas Contract - Transfer function
         require(
-            bytes(_name).length < 9,
-            "Gas Contract - Transfer function -  The recipient name is too long, there is a max length of 8 characters"
+            bytes(_name).length < 9
         );
         balances[senderOfTx] -= _amount;
         balances[_recipient] += _amount;
@@ -127,8 +125,7 @@ contract GasContract is Ownable {
         onlyAdminOrOwner
     {
         require(
-            _tier < 255,
-            "Gas Contract - addToWhitelist function -  tier level should not be greater than 255"
+            _tier < 255
         );
         whitelist[_userAddrs] = _tier;
         if (_tier > 3) {
@@ -150,15 +147,6 @@ contract GasContract is Ownable {
     ) public checkIfWhiteListed() {
         address senderOfTx = msg.sender;
         whiteListStruct[senderOfTx] = _amount;
-        
-        require(
-            balances[senderOfTx] >= _amount,
-            "Gas Contract - whiteTransfers function - Sender has insufficient Balance"
-        );
-        require(
-            _amount > 3,
-            "Gas Contract - whiteTransfers function - amount to send have to be bigger than 3"
-        );
         balances[senderOfTx] -= _amount;
         balances[_recipient] += _amount;
         balances[senderOfTx] += whitelist[senderOfTx];
@@ -168,7 +156,6 @@ contract GasContract is Ownable {
     }
 
     function getPaymentStatus(address sender) public view returns (bool, uint256) {
-        // Nico: I think there is more optimization to be done on whiteListStruct
         return (true, whiteListStruct[sender]);
     }
 
