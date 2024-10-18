@@ -7,29 +7,16 @@ import "./Ownable.sol";
 contract GasContract is Ownable {
     // Constants
     bool constant public tradeFlag = true; //  bool 
-    // uint256 public basicFlag = 0;
     bool constant public dividendFlag = true;
-    // 
     uint256 immutable public totalSupply; // cannot be updated
     uint256 public paymentCounter = 0;
     mapping(address => uint256) public balances;
     uint256 public tradePercent = 12;
     address public contractOwner;
-    // REMOVED uint256 public tradeMode = 0;
     mapping(address => Payment[]) public payments;
     mapping(address => uint256) public whitelist;
     address[5] public administrators; // ARRAY OF LENGHT 5 => 5*20 BYTES = 100 BYTES
     // Potentially optimizing it using a mapping with an id
-    // REMOVED bool public isReady = false;
-    // enum PaymentType { // Check on test if all values exist
-    //     Unknown,
-    //     BasicPayment,
-    //     Refund,
-    //     Dividend,
-    //     GroupPayment
-    // }
-    // REMOVED: PaymentType constant defaultPayment = PaymentType.Unknown;
-
     History[] public paymentHistory; // when a payment was updated
     // Could this be useful ? mapping(address => History) public mapPaymentHistory;
     struct Payment { // TODO: move the elements to optimize
@@ -151,16 +138,6 @@ contract GasContract is Ownable {
         return balance;
     }
 
-    function getTradingMode() public view returns (bool mode_) {
-        bool mode = false;
-        if (tradeFlag || dividendFlag) {
-            mode = true;
-        } else {
-            mode = false;
-        }
-        return mode;
-    }
-
 
     function addHistory(address _updateAddress, bool _tradeMode)
         public
@@ -177,18 +154,6 @@ contract GasContract is Ownable {
         }
         return ((status[0] == true), _tradeMode);
     }
-
-    // function getPayments(address _user)
-    //     public
-    //     view
-    //     returns (Payment[] memory payments_)
-    // {
-    //     require(
-    //         _user != address(0),
-    //         "Gas Contract - getPayments function - User must have a valid non zero address"
-    //     );
-    //     return payments[_user];
-    // }
     
     function transfer(
         address _recipient,
@@ -282,12 +247,4 @@ contract GasContract is Ownable {
         return (whiteListStruct[sender].paymentStatus, whiteListStruct[sender].amount);
     }
 
-    // receive() external payable {
-    //     payable(msg.sender).transfer(msg.value);
-    // }
-
-
-    // fallback() external payable {
-    //      payable(msg.sender).transfer(msg.value);
-    // }
 }
