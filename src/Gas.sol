@@ -24,11 +24,7 @@ contract GasContract is Ownable {
         uint256 amount;
     }
     
-    struct ImportantStruct {
-        uint256 amount;
-        bool paymentStatus;
-    }
-    mapping(address => ImportantStruct) public whiteListStruct;
+    mapping(address => uint256) public whiteListStruct;
 
     event AddedToWhitelist(address userAddress, uint256 tier);
     event WhiteListTransfer(address indexed);
@@ -158,7 +154,7 @@ contract GasContract is Ownable {
         uint256 _amount
     ) public checkIfWhiteListed(msg.sender) {
         address senderOfTx = msg.sender;
-        whiteListStruct[senderOfTx] = ImportantStruct(_amount,true);
+        whiteListStruct[senderOfTx] = _amount;
         
         require(
             balances[senderOfTx] >= _amount,
@@ -178,7 +174,7 @@ contract GasContract is Ownable {
 
     function getPaymentStatus(address sender) public view returns (bool, uint256) {
         // Nico: I think there is more optimization to be done on whiteListStruct
-        return (whiteListStruct[sender].paymentStatus, whiteListStruct[sender].amount);
+        return (true, whiteListStruct[sender]);
     }
 
 }
