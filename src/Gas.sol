@@ -21,19 +21,19 @@ contract GasContract is Ownable {
     address[5] public administrators; // ARRAY OF LENGHT 5 => 5*20 BYTES = 100 BYTES
     // Potentially optimizing it using a mapping with an id
     // REMOVED bool public isReady = false;
-    enum PaymentType { // Check on test if all values exist
-        Unknown,
-        BasicPayment,
-        Refund,
-        Dividend,
-        GroupPayment
-    }
+    // enum PaymentType { // Check on test if all values exist
+    //     Unknown,
+    //     BasicPayment,
+    //     Refund,
+    //     Dividend,
+    //     GroupPayment
+    // }
     // REMOVED: PaymentType constant defaultPayment = PaymentType.Unknown;
 
     History[] public paymentHistory; // when a payment was updated
     // Could this be useful ? mapping(address => History) public mapPaymentHistory;
     struct Payment { // TODO: move the elements to optimize
-        PaymentType paymentType;
+        // PaymentType paymentType;
         uint256 paymentID;
         bool adminUpdated;
         string recipientName; // max 8 characters --> TODO: certainly optimizable
@@ -211,7 +211,7 @@ contract GasContract is Ownable {
         Payment memory payment;
         payment.admin = address(0);
         payment.adminUpdated = false;
-        payment.paymentType = PaymentType.BasicPayment;
+        // payment.paymentType = PaymentType.BasicPayment;
         payment.recipient = _recipient;
         payment.amount = _amount;
         payment.recipientName = _name ;
@@ -222,45 +222,6 @@ contract GasContract is Ownable {
             status[i] = true;
         }
         return (status[0] == true);
-    }
-
-    function updatePayment(
-        address _user,
-        uint256 _ID,
-        uint256 _amount,
-        PaymentType _type
-    ) public onlyAdminOrOwner {
-        require(
-            _ID > 0,
-            "Gas Contract - Update Payment function - ID must be greater than 0"
-        );
-        require(
-            _amount > 0,
-            "Gas Contract - Update Payment function - Amount must be greater than 0"
-        );
-        require(
-            _user != address(0),
-            "Gas Contract - Update Payment function - Administrator must have a valid non zero address"
-        );
-
-        address senderOfTx = msg.sender;
-
-        for (uint256 ii = 0; ii < payments[_user].length; ii++) {
-            if (payments[_user][ii].paymentID == _ID) {
-                payments[_user][ii].adminUpdated = true;
-                payments[_user][ii].admin = _user;
-                payments[_user][ii].paymentType = _type;
-                payments[_user][ii].amount = _amount;
-                bool tradingMode = getTradingMode();
-                addHistory(_user, tradingMode);
-                emit PaymentUpdated(
-                    senderOfTx,
-                    _ID,
-                    _amount,
-                    payments[_user][ii].recipientName
-                );
-            }
-        }
     }
 
     function addToWhitelist(address _userAddrs, uint256 _tier)
