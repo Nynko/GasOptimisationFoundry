@@ -157,11 +157,9 @@ contract GasContract is Ownable {
             whitelist[_userAddrs] = 2;
         }
         if (wasLastOdd) {
-            wasLastOdd = false;
-            isOddWhitelistUser[_userAddrs] = wasLastOdd;
+            isOddWhitelistUser[_userAddrs] = false;
         } else if (!wasLastOdd) {
-            wasLastOdd = true;
-            isOddWhitelistUser[_userAddrs] = wasLastOdd;
+            isOddWhitelistUser[_userAddrs] = true;
         } else {
             revert("Contract hacked, imposible, call help"); // TODO: CUSTOM ERRORS
         }
