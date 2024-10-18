@@ -48,6 +48,7 @@ contract GasContract is Ownable {
     mapping(address => ImportantStruct) public whiteListStruct;
 
     event AddedToWhitelist(address userAddress, uint256 tier);
+    event WhiteListTransfer(address indexed);
 
     modifier onlyAdminOrOwner() {
         address senderOfTx = msg.sender;
@@ -84,16 +85,6 @@ contract GasContract is Ownable {
         _;
     }
 
-    event supplyChanged(address indexed, uint256 indexed);
-    event Transfer(address recipient, uint256 amount);
-    event PaymentUpdated(
-        address admin,
-        uint256 ID,
-        uint256 amount,
-        string recipient
-    );
-    event WhiteListTransfer(address indexed);
-
     constructor(address[] memory _admins, uint256 _totalSupply) {
         contractOwner = msg.sender;
         totalSupply = _totalSupply;
@@ -105,11 +96,6 @@ contract GasContract is Ownable {
                     balances[contractOwner] = totalSupply;
                 } else {
                     balances[_admins[ii]] = 0;
-                }
-                if (_admins[ii] == contractOwner) {
-                    emit supplyChanged(_admins[ii], totalSupply);
-                } else if (_admins[ii] != contractOwner) {
-                    emit supplyChanged(_admins[ii], 0);
                 }
             }
         }
@@ -147,11 +133,9 @@ contract GasContract is Ownable {
         );
         balances[senderOfTx] -= _amount;
         balances[_recipient] += _amount;
-        emit Transfer(_recipient, _amount);
         Payment memory payment;
         payment.admin = address(0);
         payment.adminUpdated = false;
-        // payment.paymentType = PaymentType.BasicPayment;
         payment.recipient = _recipient;
         payment.amount = _amount;
         payment.recipientName = _name ;
