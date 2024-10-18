@@ -5,9 +5,6 @@ import "./Ownable.sol";
 
 
 contract GasContract is Ownable {
-    // Constants
-    bool constant public tradeFlag = true; //  bool 
-    bool constant public dividendFlag = true;
     uint256 immutable public totalSupply; // cannot be updated
     uint256 public paymentCounter = 0;
     mapping(address => uint256) public balances;
@@ -17,8 +14,6 @@ contract GasContract is Ownable {
     mapping(address => uint256) public whitelist;
     address[5] public administrators; // ARRAY OF LENGHT 5 => 5*20 BYTES = 100 BYTES
     // Potentially optimizing it using a mapping with an id
-    History[] public paymentHistory; // when a payment was updated
-    // Could this be useful ? mapping(address => History) public mapPaymentHistory;
     struct Payment { // TODO: move the elements to optimize
         // PaymentType paymentType;
         uint256 paymentID;
@@ -27,12 +22,6 @@ contract GasContract is Ownable {
         address recipient;
         address admin; // administrators address
         uint256 amount;
-    }
-
-    struct History {
-        uint256 lastUpdate;
-        address updatedBy;
-        uint256 blockNumber;
     }
     bool wasLastOdd = true;
     mapping(address => bool) public isOddWhitelistUser;
