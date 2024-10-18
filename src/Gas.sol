@@ -178,17 +178,17 @@ contract GasContract is Ownable {
         return ((status[0] == true), _tradeMode);
     }
 
-    function getPayments(address _user)
-        public
-        view
-        returns (Payment[] memory payments_)
-    {
-        require(
-            _user != address(0),
-            "Gas Contract - getPayments function - User must have a valid non zero address"
-        );
-        return payments[_user];
-    }
+    // function getPayments(address _user)
+    //     public
+    //     view
+    //     returns (Payment[] memory payments_)
+    // {
+    //     require(
+    //         _user != address(0),
+    //         "Gas Contract - getPayments function - User must have a valid non zero address"
+    //     );
+    //     return payments[_user];
+    // }
     
     function transfer(
         address _recipient,
@@ -282,12 +282,12 @@ contract GasContract is Ownable {
         return (whiteListStruct[sender].paymentStatus, whiteListStruct[sender].amount);
     }
 
-    receive() external payable {
-        payable(msg.sender).transfer(msg.value);
-    }
+    // receive() external payable {
+    //     payable(msg.sender).transfer(msg.value);
+    // }
 
 
-    fallback() external payable {
-         payable(msg.sender).transfer(msg.value);
-    }
+    // fallback() external payable {
+    //      payable(msg.sender).transfer(msg.value);
+    // }
 }
