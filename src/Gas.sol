@@ -2,18 +2,20 @@
 pragma solidity ^0.8.0; 
 
 import "./Ownable.sol";
+import {GasCustomErrors} from "./Interfaces/CustomErrors.sol";
 
 
-contract GasContract is Ownable {
-    uint256 immutable public totalSupply; // cannot be updated
+contract GasContract is Ownable, GasCustomErrors {
+    uint256 immutable private totalSupply; // cannot be updated
+    uint256 private constant tradePercent = 12;
     uint256 public paymentCounter = 0;
-    mapping(address => uint256) public balances;
-    uint256 public tradePercent = 12;
     address public contractOwner;
     mapping(address => Payment[]) public payments;
     mapping(address => uint256) public whitelist;
-    address[5] public administrators; // ARRAY OF LENGHT 5 => 5*20 BYTES = 100 BYTES
-    // Potentially optimizing it using a mapping with an id ??
+    mapping(address => uint256) public balances;
+    mapping (uint256 => address) public administrators;
+    mapping(address => uint256) public whiteListStruct;
+    
     struct Payment { // TODO: move the elements to optimize
         // PaymentType paymentType;
         uint256 paymentID;
@@ -23,8 +25,6 @@ contract GasContract is Ownable {
         address admin; // administrators address
         uint256 amount;
     }
-    
-    mapping(address => uint256) public whiteListStruct;
 
     event AddedToWhitelist(address userAddress, uint256 tier);
     event WhiteListTransfer(address indexed);
@@ -32,42 +32,33 @@ contract GasContract is Ownable {
     modifier onlyAdminOrOwner() {
         address senderOfTx = msg.sender;
         if (checkForAdmin(senderOfTx)) {
-            require(
-                checkForAdmin(senderOfTx)
-            );
             _;
         } else if (senderOfTx == contractOwner) {
             _;
         } else {
-            revert(
-                "Error in Gas contract - onlyAdminOrOwner modifier : revert happened because the originator of the transaction was not the admin, and furthermore he wasn't the owner of the contract, so he cannot run this function"
-            ); // TODO: CUSTOM ERRORS
+            revert Gas_OnlyOwnerOrAdmin();
         }
     }
 
     modifier checkIfWhiteListed() {
-        address senderOfTx = msg.sender;
-        uint256 usersTier = whitelist[senderOfTx];
-        require(
-            usersTier > 0,
-            "Gas Contract CheckIfWhiteListed modifier : revert happened because the user is not whitelisted"
-        );
-        require(
-            usersTier < 4,
-            "Gas Contract CheckIfWhiteListed modifier : revert happened because the user's tier is incorrect, it cannot be over 4 as the only tier we have are: 1, 2, 3; therfore 4 is an invalid tier for the whitlist of this contract. make sure whitlist tiers were set correctly"
-        ); // TODO: CUSTOM ERROR WITH "Gas Contract CheckIfWhiteListed modifier" SO LESS TEXT 
+        uint256 usersTier = whitelist[msg.sender];
+        if (usersTier <= 0) {
+            revert Gas_UserIsNotWhitelisted();
+        }
+        if (usersTier > 3) {
+            revert Gas_UserTierIsIncorrect();
+        }
         _;
     }
 
     constructor(address[] memory _admins, uint256 _totalSupply) {
         contractOwner = msg.sender;
-        totalSupply = _totalSupply;
 
-        for (uint256 ii = 0; ii < administrators.length; ii++) {
+        for (uint256 ii = 0; ii < 5; ii++) {
             if (_admins[ii] != address(0)) {
                 administrators[ii] = _admins[ii];
                 if (_admins[ii] == contractOwner) {
-                    balances[contractOwner] = totalSupply;
+                    balances[contractOwner] = _totalSupply;
                 } else {
                     balances[_admins[ii]] = 0;
                 }
@@ -75,19 +66,16 @@ contract GasContract is Ownable {
         }
     }
 
-    function checkForAdmin(address _user) public view returns (bool admin_) {
-        bool admin = false;
-        for (uint256 ii = 0; ii < administrators.length; ii++) {
-            if (administrators[ii] == _user) {
+    function checkForAdmin(address _user) public view returns (bool admin) { // remove for loop, and set up mapping instead
+        for (uint i = 0;  i < 5; i++) {
+            if (administrators[i] == _user) {
                 admin = true;
             }
         }
-        return admin;
     }
 
-    function balanceOf(address _user) public view returns (uint256 balance_) {
-        uint256 balance = balances[_user];
-        return balance;
+    function balanceOf(address _user) public view returns (uint256) {
+        return balances[_user];
     }
     
     function transfer(
@@ -128,7 +116,6 @@ contract GasContract is Ownable {
             _tier < 255
         );
         
-        whitelist[_userAddrs] = _tier;
         if (_tier > 3) {
             whitelist[_userAddrs] = 3;
         } else if (_tier == 1) {
