@@ -5,6 +5,7 @@ import "./Ownable.sol";
 import {GasCustomErrors} from "./Interfaces/CustomErrors.sol";
 
 
+// Current deployemnt gas cost is: 1015849 gas
 contract GasContract is Ownable, GasCustomErrors {
     uint256 immutable private totalSupply; // cannot be updated
     uint256 private constant tradePercent = 12;
