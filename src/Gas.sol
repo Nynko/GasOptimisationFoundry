@@ -32,7 +32,8 @@ contract GasContract is Ownable, GasCustomErrors {
 
     modifier onlyAdminOrOwner() {
         //address senderOfTx = msg.sender;
-        if (!checkForAdmin(msg.sender) && msg.sender != contractOwner) { //this can still be optimised - dont use checkforadmin and use the administrator mapping
+        
+        if (!checkForAdmin(msg.sender) && msg.sender != contractOwner) { 
             revert Gas_OnlyOwnerOrAdmin();
         } 
         _;    
@@ -54,22 +55,22 @@ contract GasContract is Ownable, GasCustomErrors {
         contractOwner = msg.sender;
 
         for (uint256 ii = 0; ii < 5; ii++) {
-            if (_admins[ii] != address(0)) {
-                administrators[ii] = _admins[ii];
-                if (_admins[ii] == contractOwner) {
-                    balances[contractOwner] = _totalSupply;
-                } else {
-                    balances[_admins[ii]] = 0;
-                }
+            administrators[ii] = _admins[ii];
+            balances[_admins[ii]] = 0;
             }
-        }
+            balances[contractOwner] = _totalSupply;
+        
     }
+    
 
     function checkForAdmin(address _user) public view returns (bool admin) { // remove for loop, and set up mapping instead
+        //bool isAdmin = false;
+
         for (uint i = 0;  i < 5; i++) {
             if (administrators[i] == _user) {
-                admin = true;
-            }
+                return true;
+                break;
+                }
         }
     }
 
