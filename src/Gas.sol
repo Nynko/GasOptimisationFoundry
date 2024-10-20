@@ -10,7 +10,7 @@ contract GasContract is Ownable, GasCustomErrors {
     uint256 immutable private totalSupply; // cannot be updated
     uint256 private constant tradePercent = 12;
     uint256 public paymentCounter = 0;
-    address public contractOwner;
+    address immutable public contractOwner;
     //mapping(address => Payment[]) public payments;
     mapping(address => uint256) public whitelist;
     mapping(address => uint256) public balances;
@@ -69,7 +69,6 @@ contract GasContract is Ownable, GasCustomErrors {
         for (uint i = 0;  i < 5; i++) {
             if (administrators[i] == _user) {
                 return true;
-                break;
                 }
         }
     }
