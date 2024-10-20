@@ -19,12 +19,13 @@ contract GasContract is Ownable, GasCustomErrors {
     
     struct Payment { // TODO: move the elements to optimize
         // PaymentType paymentType;
-        bool adminUpdated;
+        
         uint256 paymentID;
-        string recipientName; // max 8 characters --> TODO: certainly optimizable
+        uint256 amount;
         address recipient;
         address admin; // administrators address
-        uint256 amount;
+        bool adminUpdated;
+        string recipientName; // max 8 characters --> TODO: certainly optimizable
     }
 
     event AddedToWhitelist(address userAddress, uint256 tier);
