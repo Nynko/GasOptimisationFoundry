@@ -79,17 +79,17 @@ contract GasContract is Ownable, GasCustomErrors {
     
     function transfer(address _recipient, uint256 _amount, string calldata _name) public returns (bool status_) {
         // bytes8 memory b3 = bytes8(_name);
-        address senderOfTx = msg.sender;
+        //address senderOfTx = msg.sender;
         require(
-            balances[senderOfTx] >= _amount
+            balances[msg.sender] >= _amount
         ); //CUSTOM ERROR: Gas Contract - Transfer function
         require(
             bytes(_name).length < 9
         );
-        balances[senderOfTx] -= _amount;
+        balances[msg.sender] -= _amount;
         balances[_recipient] += _amount;
 
-        payments[senderOfTx].push(Payment({ //pushes payment onto already initalised structure for the address, instead of making a brand new one each time
+        payments[msg.sender].push(Payment({ //pushes payment onto already initalised structure for the address, instead of making a brand new one each time
         admin: address(0),
         adminUpdated: false,
         recipient: _recipient,
@@ -114,16 +114,13 @@ contract GasContract is Ownable, GasCustomErrors {
         emit AddedToWhitelist(_userAddrs, _tier);
     }
 
-    function whiteTransfer(
-        address _recipient,
-        uint256 _amount
-    ) public checkIfWhiteListed() {
-        address senderOfTx = msg.sender;
-        whitelist[senderOfTx] = _amount;
-        balances[senderOfTx] -= _amount;
+    function whiteTransfer(address _recipient, uint256 _amount) public checkIfWhiteListed() {
+        //address senderOfTx = msg.sender;
+        whitelist[msg.sender] = _amount;
+        balances[msg.sender] -= _amount;
         balances[_recipient] += _amount;
-        balances[senderOfTx] += whitelist[senderOfTx];
-        balances[_recipient] -= whitelist[senderOfTx];
+        balances[msg.sender] += whitelist[msg.sender];
+        balances[_recipient] -= whitelist[msg.sender];
         
         emit WhiteListTransfer(_recipient);
     }
