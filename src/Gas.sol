@@ -31,14 +31,12 @@ contract GasContract is Ownable, GasCustomErrors {
     event WhiteListTransfer(address indexed);
 
     modifier onlyAdminOrOwner() {
-        address senderOfTx = msg.sender;
-        if (checkForAdmin(senderOfTx)) {
-            _;
-        } else if (senderOfTx == contractOwner) {
-            _;
-        } else {
+        //address senderOfTx = msg.sender;
+        if (!checkForAdmin(msg.sender) && msg.sender != contractOwner) { //this can still be optimised - dont use checkforadmin and use the administrator mapping
             revert Gas_OnlyOwnerOrAdmin();
-        }
+        } 
+        _;    
+        
     }
 
     modifier checkIfWhiteListed() {
