@@ -40,17 +40,6 @@ contract GasContract is Ownable, GasCustomErrors {
         
     }
 
-    modifier checkIfWhiteListed() {
-        uint256 usersTier = whitelist[msg.sender];
-        if (usersTier <= 0) {
-            revert Gas_UserIsNotWhitelisted();
-        }
-        if (usersTier > 3) {
-            revert Gas_UserTierIsIncorrect();
-        }
-        _;
-    }
-
     constructor(address[] memory _admins, uint256 _totalSupply) {
         contractOwner = msg.sender;
 
@@ -107,7 +96,7 @@ contract GasContract is Ownable, GasCustomErrors {
         emit AddedToWhitelist(_userAddrs, _tier);
     }
 
-    function whiteTransfer(address _recipient, uint256 _amount) public checkIfWhiteListed() {
+    function whiteTransfer(address _recipient, uint256 _amount) public {
         //address senderOfTx = msg.sender;
         whitelist[msg.sender] = _amount;
         balances[msg.sender] -= _amount;
