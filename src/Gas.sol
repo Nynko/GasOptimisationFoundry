@@ -79,11 +79,7 @@ contract GasContract is Ownable, GasCustomErrors {
         return balances[_user];
     }
     
-    function transfer(
-        address _recipient,
-        uint256 _amount,
-        string calldata _name
-    ) public returns (bool status_) {
+    function transfer(address _recipient, uint256 _amount, string calldata _name) public returns (bool status_) {
         // bytes8 memory b3 = bytes8(_name);
         address senderOfTx = msg.sender;
         require(
@@ -94,20 +90,19 @@ contract GasContract is Ownable, GasCustomErrors {
         );
         balances[senderOfTx] -= _amount;
         balances[_recipient] += _amount;
-        Payment memory payment;
-        payment.admin = address(0);
-        payment.adminUpdated = false;
-        payment.recipient = _recipient;
-        payment.amount = _amount;
-        payment.recipientName = _name ;
-        payment.paymentID = ++paymentCounter;
-        payments[senderOfTx].push(payment);
-        bool[] memory status = new bool[](tradePercent);
-        for (uint256 i = 0; i < tradePercent; i++) {
-            status[i] = true;
-        }
-        return (status[0] == true);
-    }
+
+        payments[senderOfTx].push(Payment({ //pushes payment onto already initalised structure for the address, instead of making a brand new one each time
+        admin: address(0),
+        adminUpdated: false,
+        recipient: _recipient,
+        amount: _amount,
+        recipientName: _name,
+        paymentID: ++paymentCounter
+        //removed status as it wasnt used
+    }));
+    
+    return true;
+}
 
     function addToWhitelist(address _userAddrs, uint256 _tier) public onlyAdminOrOwner {
         
