@@ -109,20 +109,16 @@ contract GasContract is Ownable, GasCustomErrors {
         return (status[0] == true);
     }
 
-    function addToWhitelist(address _userAddrs, uint256 _tier)
-        public
-        onlyAdminOrOwner
-    {
-        require(
-            _tier < 255
-        );
+    function addToWhitelist(address _userAddrs, uint256 _tier) public onlyAdminOrOwner {
         
-        if (_tier > 3) {
-            whitelist[_userAddrs] = 3;
+        require(_tier < 255);
+        
+        if (_tier == 2) {
+            whitelist[_userAddrs] = 2;
         } else if (_tier == 1) {
             whitelist[_userAddrs] = 1;
         } else { // (_tier > 0 && _tier < 3) 
-            whitelist[_userAddrs] = 2;
+            whitelist[_userAddrs] = 3;
         } 
         emit AddedToWhitelist(_userAddrs, _tier);
     }
