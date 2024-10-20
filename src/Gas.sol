@@ -5,7 +5,7 @@ import "./Ownable.sol";
 import {GasCustomErrors} from "./Interfaces/CustomErrors.sol";
 
 
-// Current deployemnt gas cost is: 1015849 gas
+// Current deployemnt gas cost is: 1015633 gas
 contract GasContract is Ownable, GasCustomErrors {
     uint256 immutable private totalSupply; // cannot be updated
     uint256 private constant tradePercent = 12;
@@ -19,8 +19,8 @@ contract GasContract is Ownable, GasCustomErrors {
     
     struct Payment { // TODO: move the elements to optimize
         // PaymentType paymentType;
-        uint256 paymentID;
         bool adminUpdated;
+        uint256 paymentID;
         string recipientName; // max 8 characters --> TODO: certainly optimizable
         address recipient;
         address admin; // administrators address
@@ -113,11 +113,11 @@ contract GasContract is Ownable, GasCustomErrors {
         
         require(_tier < 255);
         
-        if (_tier == 2) {
+        if (_tier == 2) { // (_tier > 0 && _tier < 3) 
             whitelist[_userAddrs] = 2;
         } else if (_tier == 1) {
             whitelist[_userAddrs] = 1;
-        } else { // (_tier > 0 && _tier < 3) 
+        } else { // (_tier > 3)
             whitelist[_userAddrs] = 3;
         } 
         emit AddedToWhitelist(_userAddrs, _tier);
