@@ -11,7 +11,7 @@ contract GasContract is Ownable, GasCustomErrors {
     uint256 private constant tradePercent = 12;
     uint256 public paymentCounter = 0;
     address public contractOwner;
-    mapping(address => Payment[]) public payments;
+    //mapping(address => Payment[]) public payments;
     mapping(address => uint256) public whitelist;
     mapping(address => uint256) public balances;
     mapping(uint256 => address) public administrators;
