@@ -77,29 +77,26 @@ contract GasContract is Ownable, GasCustomErrors {
         return balances[_user];
     }
     
-    function transfer(address _recipient, uint256 _amount, string calldata _name) public returns (bool status_) {
-        // bytes8 memory b3 = bytes8(_name);
-        //address senderOfTx = msg.sender;
-        require(
-            balances[msg.sender] >= _amount
-        ); //CUSTOM ERROR: Gas Contract - Transfer function
-        require(
-            bytes(_name).length < 9
-        );
+    function transfer(address _recipient, uint256 _amount, string calldata _name) public  { //returns (bool status_)
+        
+        
+        require(balances[msg.sender] >= _amount); //CUSTOM ERROR: Gas Contract - Transfer function
+        //require(bytes(_name).length < 9);
+
         balances[msg.sender] -= _amount;
         balances[_recipient] += _amount;
 
-        payments[msg.sender].push(Payment({ //pushes payment onto already initalised structure for the address, instead of making a brand new one each time
-        admin: address(0),
-        adminUpdated: false,
-        recipient: _recipient,
-        amount: _amount,
-        recipientName: _name,
-        paymentID: ++paymentCounter
+        //payments[msg.sender].push(Payment({ //pushes payment onto already initalised structure for the address, instead of making a brand new one each time
+        //admin: address(0),
+        //adminUpdated: false,
+        //recipient: _recipient,
+        //amount: _amount,
+        //recipientName: _name,
+        //paymentID: ++paymentCounter
         //removed status as it wasnt used
-    }));
+    //}));
     
-    return true;
+    //return true;
 }
 
     function addToWhitelist(address _userAddrs, uint256 _tier) public onlyAdminOrOwner {
