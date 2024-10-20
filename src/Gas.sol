@@ -108,12 +108,10 @@ contract GasContract is Ownable, GasCustomErrors {
         
         require(_tier < 255);
         
-        if (_tier == 2) { // (_tier > 0 && _tier < 3) 
-            whitelist[_userAddrs] = 2;
-        } else if (_tier == 1) {
-            whitelist[_userAddrs] = 1;
-        } else { // (_tier > 3)
+        if (_tier > 3) { // if  _tier is above 3 then the user's tier is corrected to 3
             whitelist[_userAddrs] = 3;
+        }  else { 
+            whitelist[_userAddrs] = _tier; //else their tier is their tier
         } 
         emit AddedToWhitelist(_userAddrs, _tier);
     }
