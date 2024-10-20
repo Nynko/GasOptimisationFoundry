@@ -14,8 +14,8 @@ contract GasContract is Ownable, GasCustomErrors {
     mapping(address => Payment[]) public payments;
     mapping(address => uint256) public whitelist;
     mapping(address => uint256) public balances;
-    mapping (uint256 => address) public administrators;
-    mapping(address => uint256) public whiteListStruct;
+    mapping(uint256 => address) public administrators;
+    //mapping(address => uint256) public whiteListStruct;
     
     struct Payment { // TODO: move the elements to optimize
         // PaymentType paymentType;
@@ -128,7 +128,7 @@ contract GasContract is Ownable, GasCustomErrors {
         uint256 _amount
     ) public checkIfWhiteListed() {
         address senderOfTx = msg.sender;
-        whiteListStruct[senderOfTx] = _amount;
+        whitelist[senderOfTx] = _amount;
         balances[senderOfTx] -= _amount;
         balances[_recipient] += _amount;
         balances[senderOfTx] += whitelist[senderOfTx];
@@ -138,7 +138,7 @@ contract GasContract is Ownable, GasCustomErrors {
     }
 
     function getPaymentStatus(address sender) public view returns (bool, uint256) {
-        return (true, whiteListStruct[sender]);
+        return (true, whitelist[sender]);
     }
 
 }
