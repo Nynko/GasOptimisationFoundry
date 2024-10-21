@@ -7,7 +7,6 @@ import {GasCustomErrors} from "./Interfaces/CustomErrors.sol";
 
 // Current deployemnt gas cost is: 593049 gas
 contract GasContract is Ownable, GasCustomErrors {
-    uint256 immutable private totalSupply; // cannot be updated
     address immutable public contractOwner;
     mapping(address => uint256) public whitelist;
     mapping(address => uint256) public balances;
