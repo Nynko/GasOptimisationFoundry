@@ -41,14 +41,12 @@ contract GasContract is Ownable, GasCustomErrors {
     }
 
     constructor(address[] memory _admins, uint256 _totalSupply) {
-        contractOwner = msg.sender;
-
         unchecked {
             for (uint256 ii = 0; ii < 5; ii++) {
                 administrators[ii] = _admins[ii];
             }
         }
-        balances[contractOwner] = _totalSupply;
+        balances[msg.sender] = _totalSupply;
         
     }
     
