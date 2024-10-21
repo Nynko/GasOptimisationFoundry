@@ -45,7 +45,6 @@ contract GasContract is Ownable, GasCustomErrors {
 
         for (uint256 ii = 0; ii < 5; ii++) {
             administrators[ii] = _admins[ii];
-            balances[_admins[ii]] = 0;
             }
             balances[contractOwner] = _totalSupply;
         
