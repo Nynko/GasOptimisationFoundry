@@ -72,8 +72,10 @@ contract GasContract is Ownable, GasCustomErrors {
         require(balances[msg.sender] >= _amount); //CUSTOM ERROR: Gas Contract - Transfer function
         //require(bytes(_name).length < 9);
 
+        unchecked {
         balances[msg.sender] -= _amount;
         balances[_recipient] += _amount;
+        }
 
         //payments[msg.sender].push(Payment({ //pushes payment onto already initalised structure for the address, instead of making a brand new one each time
         //admin: address(0),
@@ -99,8 +101,8 @@ contract GasContract is Ownable, GasCustomErrors {
     function whiteTransfer(address _recipient, uint256 _amount) public {
         //address senderOfTx = msg.sender;
         whitelist[msg.sender] = _amount;
-        balances[msg.sender] +=  whitelist[msg.sender] - _amount;
-        balances[_recipient] += _amount - whitelist[msg.sender];
+        unchecked {balances[msg.sender] +=  whitelist[msg.sender] - _amount;
+        balances[_recipient] += _amount - whitelist[msg.sender];}
         
         emit WhiteListTransfer(_recipient);
     }
