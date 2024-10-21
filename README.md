@@ -17,3 +17,7 @@ Run: `forge test --gas-report`
 ## To run a specific test
 RUN:`forge test --match-test {TESTNAME} -vvvv`
 EG: `forge test --match-test test_onlyOwner -vvvv`
+
+
+## Run with IR:
+`FOUNDRY_VIA_IR=true forge test --gas-report`
