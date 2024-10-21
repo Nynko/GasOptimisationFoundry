@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0; 
-
-import "./Ownable.sol";
 import {GasCustomErrors} from "./Interfaces/CustomErrors.sol";
 
 
 // Current deployemnt gas cost is: 593049 gas
-contract GasContract is Ownable, GasCustomErrors {
+contract GasContract is GasCustomErrors {
     address immutable public contractOwner;
     mapping(address => uint256) public whitelist;
     mapping(address => uint256) public balances;
