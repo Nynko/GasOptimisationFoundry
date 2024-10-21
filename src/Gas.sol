@@ -66,8 +66,6 @@ contract GasContract is Ownable, GasCustomErrors {
 
     function whiteTransfer(address _recipient, uint256 _amount) public {
         whitelist[msg.sender] = _amount;
-        unchecked {balances[msg.sender] +=  whitelist[msg.sender] - _amount;
-        balances[_recipient] += _amount - whitelist[msg.sender];}
         
         emit WhiteListTransfer(_recipient);
     }
